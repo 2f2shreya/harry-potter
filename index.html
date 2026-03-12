@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Kittu!</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Background Particles Canvas -->
+    <canvas id="starsCanvas"></canvas>
+
+    <!-- Custom Magic Wand Cursor -->
+    <div id="magic-cursor" class="magic-cursor"><i class="fas fa-wand-magic-sparkles"></i></div>
+
+    <!-- 0. Castle Entrance Overlay -->
+    <div id="castle-entrance" class="castle-overlay">
+        <div class="castle-door left-door"></div>
+        <div class="castle-door right-door"></div>
+        <div class="entrance-content">
+            <h1 class="magical-text">Welcome to the Magical Birthday World of <span class="highlight">Kittu</span></h1>
+            <p>Click to open the gates</p>
+            <div class="wand-click-instruction"><i class="fas fa-magic"></i></div>
+        </div>
+    </div>
+
+    <!-- 1. Magical Hero Section -->
+    <section id="hero" class="section">
+        <!-- Floating Great Hall Candles -->
+        <div id="floating-candles-container" class="floating-candles">
+            <!-- Candles injected via JS -->
+        </div>
+
+        <div class="hero-content">
+            <!-- Text written by wand animation -->
+            <h1 class="wand-writing-text hidden-start" id="birthday-greeting">✨ Happy Birthday Kittu ✨</h1>
+            <p class="spell-instruction hidden-start" id="spell-instruction">Cast your first spell!</p>
+            <div class="hero-spell-container hidden-start" id="hero-spell">
+                <button class="glowing-btn spell-btn" id="cast-spell-btn" style="margin: 10px;"><i
+                        class="fas fa-bolt"></i> Lumos Celebration!</button>
+                <button class="glowing-btn spell-btn" id="letter-btn" style="margin: 10px;"><i
+                        class="fas fa-envelope"></i> Hogwarts Letter</button>
+                <button class="glowing-btn spell-btn" id="sorting-hat-btn" style="margin: 10px;"><i
+                        class="fas fa-hat-wizard"></i> Sorting Hat</button>
+            </div>
+        </div>
+
+        <!-- Balloons Container (Empty by default, populated by JS) -->
+        <div id="balloons-container"></div>
+    </section>
+
+    <!-- Hogwarts Acceptance Letter Modal -->
+    <div id="letter-modal" class="modal-overlay hidden" style="z-index: 9999;">
+        <div class="letter-wrapper">
+            <div class="envelope" id="envelope">
+                <div class="envelope-flap" id="envelope-flap"></div>
+                <div class="envelope-back"></div>
+                <div class="wax-seal" id="wax-seal">K</div>
+                <div class="letter-paper" id="letter-paper">
+                    <h3
+                        style="color:#1a472a; text-align:center; font-family:var(--font-heading); margin-bottom: 5px; font-size: 1.2rem;">
+                        HOGWARTS SCHOOL</h3>
+                    <p style="text-align:center; font-size:0.8rem; margin-bottom: 15px; color:#5a3f2d;">of WITCHCRAFT
+                        and WIZARDRY</p>
+                    <p>Dear <strong>Kittu</strong>,</p>
+                    <p style="margin-top:10px;">We are pleased to inform you that you possess an extraordinary magical
+                        aura! Your unmatched ability to bring joy and light to everyone around you is as powerful as a
+                        Patronus charm.</p>
+                    <p style="text-align:center; margin: 15px 0; font-size:1.1rem; color:var(--accent-pink);">
+                        <strong>HAPPIEST BIRTHDAY! ✨</strong>
+                    </p>
+                    <p>We await your owl with celebration.</p>
+                    <p style="margin-top:10px;">Yours sincerely,</p>
+                    <p
+                        style="font-family: 'Brush Script MT', 'Palatino Linotype', cursive; font-size: 1.5rem; line-height: 1.2; margin-top:10px;">
+                        <em>Minerva McGonagall</em>
+                    </p>
+                    <p>Deputy Headmistress</p>
+                </div>
+                <div class="envelope-front"></div>
+            </div>
+            <button id="close-letter" class="glowing-btn"
+                style="margin-top: 50px; opacity: 0; pointer-events: none; transition: opacity 0.5s;">Close
+                Letter</button>
+        </div>
+    </div>
+
+    <!-- Sorting Hat Modal -->
+    <div id="sorting-modal" class="modal-overlay hidden" style="z-index: 9999;">
+        <div class="modal-content glass-card" style="text-align: center; max-width: 500px;">
+            <i class="fas fa-hat-wizard sorting-hat-icon"
+                style="font-size: 6rem; color: #a16207; margin-bottom: 20px; animation: bounce 2s infinite;"></i>
+            <h2 style="font-family: var(--font-heading); color: var(--accent-gold); margin-bottom: 20px;">The Sorting
+                Ceremony</h2>
+            <p id="sorting-text" style="font-size: 1.2rem; margin-bottom: 20px;">Hmm, difficult. Very difficult. Plenty
+                of courage, I see. Not a bad mind either. There's talent, oh my goodness, yes... but where to put you?
+            </p>
+            <button class="glowing-btn" id="start-sorting" style="margin-bottom: 10px;">Find My House!</button>
+            <h1 id="sorting-result"
+                style="font-size: 3rem; color: var(--accent-pink); font-family: var(--font-heading); margin-top: 20px; opacity: 0; transition: opacity 1s;">
+                GRYFFINDOR!</h1>
+            <button id="close-sorting" class="glowing-btn" style="margin-top: 20px; display: none;">Accept
+                Destiny</button>
+        </div>
+    </div>
+
+    <!-- 2. 3D Memory Portal -->
+    <section id="portal" class="section">
+        <div class="section-header">
+            <h2>The Pensieve of Memories</h2>
+            <p>Step into the magic</p>
+        </div>
+        <div class="portal-container">
+            <div class="portal-ring"></div>
+            <!-- Photo cards will be injected by JS -->
+        </div>
+    </section>
+
+    <!-- Memory Modal -->
+    <div id="memory-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-card">
+            <button id="close-memory" class="close-btn"><i class="fas fa-times"></i></button>
+            <div class="modal-image-container">
+                <img id="memory-img" src="assets/portal-1.jpg" alt="Memory">
+            </div>
+            <p id="memory-text" class="memory-caption"></p>
+        </div>
+    </div>
+
+    <!-- 3. Interactive Timeline -->
+    <section id="timeline" class="section">
+        <div class="section-header">
+            <h2>Marauder's Map of Life</h2>
+            <p>I solemnly swear that I am up to no good...</p>
+        </div>
+        <div class="timeline-container" id="timeline-container">
+            <div class="timeline-line"></div>
+
+            <!-- Marauder Footprints Container -->
+            <div id="marauder-footprints" class="marauder-footprints"></div>
+
+            <!-- Timeline Item 1 -->
+            <div class="timeline-item left">
+                <div class="polaroid-card tilt-left">
+                    <div class="polaroid-img">
+                        <img src="assets/timeline-childhood2.jpg" alt="Childhood">
+                    </div>
+                    <div class="polaroid-caption">
+                        <i class="fas fa-hat-wizard"></i> Childhood Memories <i class="fas fa-star"
+                            style="color:var(--accent-gold)"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="polaroid-card tilt-right">
+                    <div class="polaroid-img">
+                        <img src="assets/timeline-school.jpg" alt="School">
+                    </div>
+                    <div class="polaroid-caption">
+                        <i class="fas fa-book-journal-whills"></i> School Memories <i class="fas fa-heart"
+                            style="color:var(--accent-pink)"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="polaroid-card tilt-left">
+                    <div class="polaroid-img">
+                        <img src="assets/timeline-funny.jpg" alt="Funny">
+                    </div>
+                    <div class="polaroid-caption">
+                        <i class="fas fa-bolt"></i> Funny Moments <i class="fas fa-star"
+                            style="color:var(--accent-gold)"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="polaroid-card tilt-right">
+                    <div class="polaroid-img">
+                        <img src="assets/portal-5.jpg" alt="Recent">
+                    </div>
+                    <div class="polaroid-caption">
+                        <i class="fas fa-wand-magic-sparkles"></i> Recent Memories <i class="fas fa-heart"
+                            style="color:var(--accent-pink)"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="polaroid-card tilt-left">
+                    <div class="polaroid-img">
+                        <img src="assets/timeline-funny2.jpg" alt="Even More Comedy">
+                    </div>
+                    <div class="polaroid-caption">
+                        <i class="fas fa-dragon"></i> Double Comedy! <i class="fas fa-star"
+                            style="color:var(--accent-gold)"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="polaroid-card tilt-right">
+                    <div class="polaroid-img">
+                        <img src="assets/timeline-recent2.jpg" alt="Chef Kittu">
+                    </div>
+                    <div class="polaroid-caption">
+                        <i class="fas fa-flask"></i> Master Potions Mode! <i class="fas fa-heart"
+                            style="color:var(--accent-pink)"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="polaroid-card tilt-left">
+                    <div class="polaroid-img">
+                        <img src="assets/timeline-recent3.jpg" alt="Family Memory">
+                    </div>
+                    <div class="polaroid-caption">
+                        <i class="fas fa-user-group"></i> Blessed Family <i class="fas fa-star"
+                            style="color:var(--accent-gold)"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3.5 The Daily Prophet Special Edition -->
+    <section id="daily-prophet" class="section">
+        <div class="prophet-container" data-aos="fade-up">
+            <div class="prophet-header">
+                <h1 class="prophet-title">The Daily Prophet</h1>
+                <div class="prophet-meta">
+                    <span>SPECIAL BIRTHDAY EDITION</span>
+                    <span>DIAGON ALLEY</span>
+                    <span><i class="fas fa-star" style="color: black;"></i> 1 SICKLE <i class="fas fa-star"
+                            style="color: black;"></i></span>
+                </div>
+            </div>
+            <div class="prophet-content">
+                <h2 class="prophet-headline">WITCH SPOTTED AT DIAGON ALLEY'S NEWEST BAKERY!</h2>
+                <div class="prophet-article">
+                    <div class="prophet-image-container">
+                        <img src="assets/whiskk-pic.png" alt="Kittu at Whiskk" class="prophet-moving-image">
+                        <div class="prophet-caption">Kittu captured smiling outside 'Whiskk Avenue', rumored to be the
+                            newest supplier of magical pastries and amortentia-infused cupcakes.</div>
+                    </div>
+                    <div class="prophet-text">
+                        <p><span class="drop-cap">M</span>ministry officials were stunned today when the renowned witch,
+                            Kittu, was spotted outside the brand new magical bakery 'Whiskk Avenue'. Crowds gathered as
+                            the birthday girl made a rare public appearance.</p>
+                        <p>"She just has this magical aura about her," one bystander wearing a slightly singed wizard's
+                            hat told our reporters. "One smile from her and my wand started shooting sparks on its own!
+                            It's clear she's celebrating a very special day today."</p>
+                        <p>Rumors suggest that 'Whiskk' had prepared a spectacular, enchanted multi-tiered cake that
+                            changes flavor with every bite, purely for her celebration. Ministry Obliviators are on
+                            standby in case the Muggle population catches wind of this extraordinary event.</p>
+                        <p>We at the Prophet wish Kittu a truly magical birthday filled with Butterbeer, Chocolate
+                            Frogs, and extraordinary adventures.</p>
+                    </div>
+                </div>
+
+                <h2 class="prophet-headline"
+                    style="margin-top: 3rem; font-size: 2.2rem; border-top: 2px solid #1a1a1a; padding-top: 1rem;">
+                    OFFICIAL HOGWARTS CORRESPONDENCE</h2>
+                <div class="prophet-article" style="display: block; text-align: center;">
+                    <div
+                        style="background: #fdf6e3; padding: 2rem; border: 2px solid #5a3f2d; box-shadow: 0 0 15px rgba(0,0,0,0.2) inset; margin: 0 auto; max-width: 600px; position: relative;">
+                        <h3
+                            style="color:#1a472a; font-family:var(--font-heading); margin-bottom: 5px; font-size: 1.5rem;">
+                            HOGWARTS SCHOOL</h3>
+                        <p style="font-size:0.9rem; margin-bottom: 15px; color:#5a3f2d;">of WITCHCRAFT and WIZARDRY</p>
+
+                        <div
+                            style="text-align: left; font-family: 'Playfair Display', serif; font-size: 1.15rem; color: #1a1a1a; line-height: 1.6;">
+                            <p>Dear <strong>Kittu</strong>,</p>
+                            <p style="margin-top:10px;">We are pleased to inform you that you possess an extraordinary
+                                magical aura! Your unmatched ability to bring joy and light to everyone around you is as
+                                powerful as a Patronus charm.</p>
+
+                            <p style="text-align:center; margin: 20px 0; font-size:1.3rem; color:var(--accent-pink);">
+                                <strong>HAPPIEST BIRTHDAY! ✨</strong>
+                            </p>
+
+                            <div class="secret-message-area" style="margin: 1.5rem 0; border: none; padding: 0;">
+                                <div class="reveal-trigger" id="prophet-reveal-wand" title="Mischief Managed?"
+                                    style="font-size: 1.2rem; margin-bottom: 0;">
+                                    <i class="fas fa-wand-magic-sparkles"></i>
+                                    <span style="font-size: 0.8rem; font-family: sans-serif; opacity: 0.7;">(Tap to
+                                        reveal hidden text)</span>
+                                </div>
+                                <div class="magical-hidden-lines" id="prophet-hidden-lines" style="text-align: center;">
+                                    <p>I know why you went to Rupali Maushi’s place instead of coming home… magic tells
+                                        me everything 👀✨</p>
+                                </div>
+                            </div>
+
+                            <p>We await your owl with celebration.</p>
+                            <p style="margin-top:20px;">Yours sincerely,</p>
+                            <p
+                                style="font-family: 'Brush Script MT', 'Palatino Linotype', cursive; font-size: 1.8rem; line-height: 1.2; margin-top:5px; color: #1a1a1a;">
+                                Minerva McGonagall
+                            </p>
+                            <p style="font-size: 0.9rem;">Deputy Headmistress</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Childhood Memory Book -->
+    <section id="memory-book" class="section">
+        <div class="section-header">
+            <h2>Tom Riddle's Diary (But Good!)</h2>
+        </div>
+        <div class="book-container">
+            <div class="book" id="memory-book-el">
+                <!-- Page 3 (Back) -->
+                <div class="page" id="page3" style="z-index: 1;">
+                    <div class="front">
+                        <img src="assets/book-cover-back.jpg" alt="Childhood" class="book-img">
+                        <p class="handwriting">Always smiling 😊</p>
+                        <i class="fas fa-sun doodle" style="top:20%; right:15%; color:#fbbf24;"></i>
+                    </div>
+                    <div class="back cover-back">
+                        <h3>The End</h3>
+                        <p>Beautiful memories</p>
+                    </div>
+                </div>
+
+                <!-- Page 2 -->
+                <div class="page" id="page2" style="z-index: 2;">
+                    <div class="front">
+                        <img src="assets/book-page1.jpg" alt="Childhood" class="book-img">
+                        <p class="handwriting">🌳</p>
+                        <i class="fas fa-cloud doodle" style="top:10%; right:10%; color:#93c5fd;"></i>
+                    </div>
+                    <div class="back">
+                        <img src="assets/book-page2.jpg" alt="Childhood" class="book-img">
+                        <p class="handwriting"> </p>
+                        <i class="fas fa-heart doodle" style="bottom:20%; left:15%; color:#f472b6;"></i>
+                    </div>
+                </div>
+
+                <!-- Page 1 (Cover) -->
+                <div class="page" id="page1" style="z-index: 3;">
+                    <div class="front cover">
+                        <h3 class="book-title">📖 Kittu's Diary</h3>
+                        <p class="book-subtitle">Click to open</p>
+                    </div>
+                    <div class="back">
+                        <img src="assets/book-page3.jpg" alt="Childhood" class="book-img">
+                        <p class="handwriting">💕</p>
+                        <i class="fas fa-star doodle" style="top:15%; right:15%; color:#fbbf24;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Games Section -->
+    <section id="games" class="section">
+        <div class="section-header">
+            <h2>Triwizard Tournament Games</h2>
+            <p>Let's play and celebrate!</p>
+        </div>
+        <div class="games-grid">
+            <!-- Game 1: Crystal Ball Guess -->
+            <div class="game-card glass-card" id="game-guess">
+                <h3><i class="fas fa-hat-wizard"></i> Memory Crystal Ball</h3>
+                <div class="crystal-ball" onclick="this.classList.toggle('revealed')">
+                    <div class="crystal-inner">
+                        <img src="assets/game-guess.jpg" alt="Guess this?" class="game-img crystal-img">
+                        <div class="mist-overlay"></div>
+                    </div>
+                </div>
+                <p class="game-instruction" style="margin-top: 10px;">Click the crystal ball to reveal...</p>
+            </div>
+
+            <!-- Game 2: Photo Puzzle -->
+            <div class="game-card glass-card" id="game-puzzle">
+                <h3><i class="fas fa-spider"></i> Photo Puzzle</h3>
+                <p class="game-instruction">Click two pieces to swap them.</p>
+                <div class="puzzle-grid" id="puzzle-board">
+                    <!-- pieces injected by JS -->
+                </div>
+                <button class="glowing-btn reset-btn" id="puzzle-reset">Shuffle Puzzle</button>
+            </div>
+
+            <!-- Game 3: Lumos/Nox Candles -->
+            <div class="game-card glass-card" id="game-candles">
+                <h3><i class="fas fa-wand-magic-sparkles"></i> Lumos & Nox Spells</h3>
+                <p class="game-instruction">Click to cast 'Lumos' (Light) and 'Nox' (Extinguish)!</p>
+                <div class="mini-cake">
+                    <div class="mini-icing"></div>
+                    <div class="mini-candle" style="left: 20px;">
+                        <div class="mini-flame"></div>
+                    </div>
+                    <div class="mini-candle" style="left: 55px;">
+                        <div class="mini-flame"></div>
+                    </div>
+                    <div class="mini-candle" style="left: 90px;">
+                        <div class="mini-flame"></div>
+                    </div>
+                </div>
+                <p id="candles-result" class="hidden-message">Yay! Make a wish! 🌠</p>
+            </div>
+
+            <!-- Game 4: Owl Post Quiz -->
+            <div class="game-card glass-card" id="game-quiz-section">
+                <h3><i class="fas fa-scroll"></i> O.W.L. Exams (Quiz)</h3>
+                <div class="quiz-container">
+                    <p id="quiz-question" class="quiz-q">What is Kittu's favorite food?</p>
+                    <div class="quiz-options">
+                        <button class="quiz-btn" onclick="checkQuiz(false, this)">Pizza 🍕</button>
+                        <button class="quiz-btn" onclick="checkQuiz(true, this)">(shreya) mine fav item from childhood
+                            baki ka bhad me gya! 🤤</button>
+                        <button class="quiz-btn" onclick="checkQuiz(false, this)">Pasta 🍝</button>
+                        <button class="quiz-btn" onclick="checkQuiz(false, this)">fruit-salad </button>
+                    </div>
+                    <p id="quiz-result" class="hidden-message"></p>
+                </div>
+            </div>
+
+            <!-- Game 5: Expecto Patronum -->
+            <div class="game-card glass-card" id="game-patronus">
+                <h3><i class="fas fa-ghost"></i> The Patronus Charm</h3>
+                <p class="game-instruction">Cast the spell to summon a guardian!</p>
+                <div class="patronus-game-container">
+                    <button class="glowing-btn prompt-btn" id="patronus-btn"
+                        style="margin-top:10px; font-size:1.1rem; border: 1px solid var(--accent-glow); box-shadow: 0 0 15px var(--accent-glow);">Expecto
+                        Patronum 🪄</button>
+                </div>
+            </div>
+
+            <!-- Game 6: Potions Class -->
+            <div class="game-card glass-card" id="game-potions">
+                <h3><i class="fas fa-flask"></i> Potions Class</h3>
+                <p class="game-instruction">Mix the ingredients to brew the Felicis potion!</p>
+                <div class="potions-container">
+                    <div class="cauldron">
+                        <div class="cauldron-liquid" id="cauldron-liquid"></div>
+                    </div>
+                    <div class="ingredients" style="margin-top: 15px;">
+                        <button class="glowing-btn ingredient-btn" data-color="blue"
+                            style="padding: 0.5rem 1rem; font-size: 0.9rem; background: linear-gradient(135deg, #1e3a8a, #3b82f6); box-shadow: 0 0 15px #3b82f6; margin-right: 5px;">not
+                            going home</button>
+                        <button class="glowing-btn ingredient-btn" data-color="yellow"
+                            style="padding: 0.5rem 1rem; font-size: 0.9rem; background: linear-gradient(135deg, #854d0e, #eab308); box-shadow: 0 0 15px #eab308;">going
+                            home 🏠✨</button>
+                    </div>
+                    <p id="potion-result" class="hidden-message"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Songs Section -->
+    <section id="songs" class="section">
+        <div class="section-header">
+            <h2>The Weird Sisters' Playlist</h2>
+            <p>Magical melodies 🦉</p>
+        </div>
+        <div class="music-player glass-card" id="music-player-container">
+            <div class="album-art-container">
+                <img class="album-art" src="assets/portal-1.jpg" id="album-cover" alt="Album Cover">
+                <div class="music-waves" id="music-waves">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="song-info">
+                <h3 id="song-title">Beautiful Memories</h3>
+                <p id="song-artist">ghost of a Hogwarts student. "Moaning Myrtle 👻"</p>
+            </div>
+            <div class="player-controls">
+                <button class="ctrl-btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                <button class="ctrl-btn play-btn" id="play-btn"><i class="fas fa-play"></i></button>
+                <button class="ctrl-btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+            </div>
+            <div class="progress-bar-container" id="progress-container">
+                <div class="progress" id="progress"></div>
+            </div>
+            <!-- Audio Element (User will replace src with their actual songs) -->
+            <audio id="audio" src="assets/harry_potter_theme.mp3"></audio>
+        </div>
+    </section>
+
+    <!-- 7. Personalized Magical Message Section -->
+    <section id="surprise" class="section special-message-section">
+        <div class="section-header">
+            <h2>A Magical Message</h2>
+            <p>A little piece of magic just for you ✨</p>
+        </div>
+
+        <div class="message-reveal-container">
+            <button id="surprise-btn" class="glowing-btn pulse-glow"><i class="fas fa-envelope-open-text"></i> Reveal
+                Your Prophecy</button>
+        </div>
+
+        <div id="surprise-message" class="hidden magical-card-container">
+            <div class="magical-card-content">
+                <div class="card-decor top-left">🪄</div>
+                <div class="card-decor top-right">⭐</div>
+
+                <h1 class="message-greeting">✨ Dear kittu, ✨</h1>
+                <p class="message-body">You make every moment magical and every memory brighter.</p>
+                <p class="message-body">This little world was created just for you.</p>
+
+                <div class="card-decor bottom-left">💖</div>
+                <div class="card-decor bottom-right">⚡</div>
+
+                <!-- Particle Container for Hearts -->
+                <div id="heart-particles-container"></div>
+            </div>
+        </div>
+
+        <!-- Magical Audio Effect -->
+        <audio id="magic-sound-effect" src="https://actions.google.com/sounds/v1/fantasy/magic_chime_sweep.ogg"
+            preload="auto"></audio>
+    </section>
+
+    <!-- 8. Detailed Cake Celebration -->
+    <section id="celebration" class="section">
+        <div class="section-header">
+            <h2>Great Hall Feast!</h2>
+            <p>Cast a spell and cut the cake ⚡</p>
+        </div>
+        <div class="celebration-cake-container" id="main-cake-container">
+            <div class="big-cake" id="big-cake">
+                <div class="bc-plate"></div>
+                <div class="bc-tier bc-tier-bottom"></div>
+                <div class="bc-tier bc-tier-middle"></div>
+                <div class="bc-tier bc-tier-top"></div>
+                <div class="bc-candles">
+                    <div class="bc-candle" style="left: 20%;">
+                        <div class="bc-flame"></div>
+                    </div>
+                    <div class="bc-candle" style="left: 40%;">
+                        <div class="bc-flame"></div>
+                    </div>
+                    <div class="bc-candle" style="left: 60%;">
+                        <div class="bc-flame"></div>
+                    </div>
+                    <div class="bc-candle" style="left: 80%;">
+                        <div class="bc-flame"></div>
+                    </div>
+                </div>
+                <div class="knife" id="cake-knife"><i class="fas fa-utensil-knife"></i></div>
+            </div>
+            <p class="cake-instruction" id="big-cake-msg"
+                style="margin-top: 30px; font-size: 1.2rem; color: var(--accent-gold);">1. Click the flames to blow them
+                out!</p>
+        </div>
+    </section>
+
+    <!-- 9. Secret Memory Vault -->
+    <div id="secret-trigger" class="secret-icon"><i class="fas fa-moon"></i></div>
+    <div id="secret-vault" class="modal-overlay hidden">
+        <div class="modal-content glass-card vault-content">
+            <button id="close-vault" class="close-btn"><i class="fas fa-times"></i></button>
+            <h2>The Restricted Section 🤫</h2>
+            <p>You found the hidden vault! Some magical secrets are just for us.</p>
+            <div class="vault-gallery">
+                <img src="assets/ajithbabu.jpg" alt="Secret 1">
+                <img src="assets/vault-2.jpg" alt="Secret 2">
+                <img src="assets/vault-3.jpg" alt="Secret 3">
+                <img src="assets/vault-4.jpg" alt="Secret 4">
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. Mini Birthday Movie -->
+    <section id="movie" class="section">
+        <div class="section-header">
+            <h2>🎬 The Daily Prophet: Kittu's Highlights</h2>
+            <p>A magical journey through time</p>
+        </div>
+        <div class="movie-container glass-card">
+            <div class="movie-screen" id="movie-screen">
+                <div class="movie-slide active">
+                    <img src="assets/self.png" alt="Movie Scene 1">
+                    <div class="movie-caption">A bright, beautiful star ✨</div>
+                </div>
+                <div class="movie-slide">
+                    <img src="assets/movie-2.jpg" alt="Movie Scene 2">
+                    <div class="movie-caption">Growing up with that infectious smile 😊</div>
+                </div>
+                <div class="movie-slide">
+                    <img src="assets/movie-3.jpg" alt="Movie Scene 3">
+                    <div class="movie-caption">Radiant and stylish as always! 🌟</div>
+                </div>
+                <div class="movie-slide">
+                    <img src="assets/movie-4.jpg" alt="Movie Scene 4">
+                    <div class="movie-caption">Unstoppable and fearless 😎</div>
+                </div>
+                <div class="movie-slide">
+                    <img src="assets/self2.png" alt="Movie Scene 5">
+                    <div class="movie-caption">Making every moment pure magic 💖</div>
+                </div>
+                <div class="movie-slide">
+                    <img src="assets/movie-6.jpg" alt="Movie Scene 6">
+                    <div class="movie-caption">Bonding with mom..! 📸</div>
+                </div>
+                <div class="movie-slide">
+                    <img src="assets/movie-7.jpg" alt="Movie Scene 7">
+                    <div class="movie-caption">forever 💕</div>
+                </div>
+                <div class="movie-slide">
+                    <img src="assets/movie-8.jpg" alt="Movie Scene 8">
+                    <div class="movie-caption">Always shining so brightly ✨</div>
+                </div>
+                <div class="movie-slide">
+                    <img src="assets/movie-9.jpg" alt="Movie Scene 9">
+                    <div class="movie-caption">Happy Birthday Kittu! 🎉 We love you!</div>
+                </div>
+            </div>
+            <div class="movie-controls">
+                <button class="glowing-btn" id="movie-start-btn"><i class="fas fa-play"></i> Play Movie</button>
+            </div>
+            <!-- Background music for movie -->
+            <audio id="movie-audio" src="assets/hp_movie_theme.m4a"></audio>
+        </div>
+    </section>
+
+    <!-- Harry Potter Owl Courier -->
+    <div id="owl-courier" class="owl-courier">
+        <i class="fas fa-feather-alt owl-feather" style="color: white; transform: rotate(-45deg);"></i>
+        <span style="font-size: 3.5rem;">🦉</span>
+        <i class="fas fa-hat-wizard sorting-hat"></i>
+    </div>
+
+    <!-- The Golden Snitch -->
+    <div id="snitch-score-container"
+        style="position:fixed; top:20px; right:20px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--accent-gold); color: var(--accent-gold); z-index: 9999; font-weight: bold; display: none;">
+        Snitches Caught: <span id="snitch-score">0</span>
+    </div>
+    <div id="golden-snitch" class="golden-snitch">
+        <div class="snitch-body"></div>
+        <div class="snitch-wing left-wing"></div>
+        <div class="snitch-wing right-wing"></div>
+    </div>
+
+    <!-- External Utilities -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>
